@@ -1,0 +1,78 @@
+group 'com.jetair'
+version '1.0'
+
+apply plugin: 'java'
+apply plugin: 'idea'
+apply plugin: 'war'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+    mavenLocal()
+    jcenter()
+    mavenCentral()
+}
+/*'org.apache.cxf:cxf-api:2.7.18',*/
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    compile fileTree(dir:'src/main/webapp/WEB-INF/lib',include:['*.jar'])
+    compile ('org.springframework:spring-context:4.3.10.RELEASE',
+            'org.springframework:spring-test:4.3.10.RELEASE',
+            'org.springframework:spring-aop:4.3.10.RELEASE',
+            'org.springframework:spring-webmvc:4.3.10.RELEASE',
+            'org.apache.cxf:cxf-rt-frontend-jaxws:3.1.11',
+            'org.apache.cxf:cxf-rt-transports-http:3.1.11',
+            'org.springframework.data:spring-data-redis:1.8.6.RELEASE',
+            'redis.clients:jedis:2.9.0',
+            'com.fasterxml.jackson.core:jackson-databind:2.8.9',
+            'de.ruedigermoeller:fst:2.45',
+            'junit:junit:4.11'
+
+    )
+
+
+    // gradle clean
+    // gradle build
+    // gradle war
+    // gradle jar
+    // gradle runApp
+
+}
+
+
+// Gretty Support
+buildscript {
+    repositories {
+        jcenter()
+    }
+
+    dependencies {
+        classpath 'org.akhikhl.gretty:gretty:2.0.0'
+    }
+}
+
+if (!project.plugins.findPlugin(org.akhikhl.gretty.GrettyPlugin))
+    project.apply(plugin: org.akhikhl.gretty.GrettyPlugin)
+
+gretty {
+    httpEnabled = true
+    servletContainer = 'tomcat8'
+    contextPath = '/app'
+    host = 'localhost'
+    httpPort = 8080
+    scanInterval = 1
+    fastReload = true
+    inplaceMode = 'soft'
+    loggingLevel = 'DEBUG'
+    consoleLogEnabled = true
+    debugPort = 6005
+    debugSuspend = true
+}
+
+// 编码统一用UTF-8, 解决乱码
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+[compileJava, javadoc, compileTestJava]*.options*.encoding = 'UTF-8'
